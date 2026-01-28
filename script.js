@@ -8,7 +8,7 @@ function generatePassword() {
   const nrNumbers = parseInt(document.getElementById("numbers").value);
   const nrSymbols = parseInt(document.getElementById("symbols").value);
 
-  // Check empty inputs
+  // Validation: empty fields
   if (
     isNaN(size) ||
     isNaN(nrLetters) ||
@@ -21,55 +21,62 @@ function generatePassword() {
 
   const totalLength = nrLetters + nrNumbers + nrSymbols;
 
-  // Validation
-  if (size <= 0) {
-    alert("❌ Password length must be greater than 0!");
-    return;
-  }
-
+  // Validation: match size
   if (totalLength !== size) {
-    alert("❌ Total characters do not match password length!");
+    alert("❌ Please check the size!");
     return;
   }
 
-  let passwordArray = [];
+  if (totalLength === 0) {
+    alert("❌ Please enter at least one character!");
+    return;
+  }
+
+  // Strength (EXACTLY like Python)
+  let strengthText = "";
+  if (totalLength <= 4) strengthText = "🔴 Easy password";
+  else if (totalLength <= 6) strengthText = "🟡 Medium password";
+  else strengthText = "🟢 Strong password";
+
+  document.getElementById("strength").innerText = strengthText;
+
+  let password = [];
 
   // Add letters
   for (let i = 0; i < nrLetters; i++) {
-    passwordArray.push(
+    password.push(
       letters[Math.floor(Math.random() * letters.length)]
     );
   }
 
   // Add numbers
   for (let i = 0; i < nrNumbers; i++) {
-    passwordArray.push(
+    password.push(
       numbers[Math.floor(Math.random() * numbers.length)]
     );
   }
 
   // Add symbols
   for (let i = 0; i < nrSymbols; i++) {
-    passwordArray.push(
+    password.push(
       symbols[Math.floor(Math.random() * symbols.length)]
     );
   }
 
-  // Shuffle password
-  for (let i = passwordArray.length - 1; i > 0; i--) {
+  // BEFORE SHUFFLE (Python equivalent print)
+  document.getElementById("beforeShuffle").innerText =
+    "Password before shuffle: " + password.join("");
+
+  // SHUFFLE (same as random.shuffle)
+  for (let i = password.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [passwordArray[i], passwordArray[j]] = [passwordArray[j], passwordArray[i]];
+    [password[i], password[j]] = [password[j], password[i]];
   }
 
-  const finalPassword = passwordArray.join("");
+  // JOIN (same as "".join)
+  const finalPassword = password.join("");
 
-  document.getElementById("result").innerText = finalPassword;
-
-  // Strength indicator
-  let strengthText = "";
-  if (size <= 4) strengthText = "🔴 Weak Password";
-  else if (size <= 6) strengthText = "🟡 Medium Password";
-  else strengthText = "🟢 Strong Password";
-
-  document.getElementById("strength").innerText = strengthText;
+  // Final output
+  document.getElementById("result").innerText =
+    "Shuffled password: " + finalPassword;
 }
